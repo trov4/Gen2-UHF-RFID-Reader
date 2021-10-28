@@ -28,7 +28,7 @@
 #include <cmath>
 #include <sys/time.h>
 #include "tag_decoder_impl.h"
-
+int count = 2;
 namespace gr {
   namespace rfid {
 
@@ -324,9 +324,18 @@ namespace gr {
             else
               char_bits[i] = '1';
           }
-          if(check_crc(char_bits,128) == 1)
-          {
-
+        //  if(check_crc(char_bits,128) == 1)
+        //  {
+	    std::map<int,int>::iterator it2 = reader_state->reader_stats.tag_reads.find(17);
+	    if (it2 != reader_state->reader_stats.tag_reads.end() && count > 5) {
+		it2->second++;
+	    } else if(count>5) {
+		    //count++;
+		    reader_state->reader_stats.tag_reads[17]=1;
+	    } else {
+		    count++;
+		   }
+	if (check_crc(char_bits,128) == 1) {
             if(reader_state->reader_stats.cur_slot_number > reader_state->reader_stats.max_slot_number)
             {
               reader_state->reader_stats.cur_slot_number = 1;
