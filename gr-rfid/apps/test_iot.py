@@ -1,4 +1,4 @@
-import newIoTtest as iot 
+import aws_interface as iot 
 import time
 
 

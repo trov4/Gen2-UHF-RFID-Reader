@@ -10,7 +10,7 @@ w_dir = os.getcwd().split("HealthX")[0] + "HealthX"
 
 set_serve = False
 host = "a39nu1xs62gahx-ats.iot.us-east-1.amazonaws.com"
-certPath = w_dir + "\\cert\\"
+certPath = w_dir + "/cert/"
 clientId = "pizerow"
 topic = "location"
 myAWSIoTMQTTClient = None
