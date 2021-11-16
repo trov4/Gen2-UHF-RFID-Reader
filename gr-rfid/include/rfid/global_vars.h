@@ -60,7 +60,8 @@ namespace gr {
       DECODER_STATUS       decoder_status;
       READER_STATS         reader_stats;
 
-
+      // for new export func
+      std::vector<int> tags_to_export;
 
       std::vector<float> magn_squared_samples; // used for sync
       int n_samples_to_ungate; // used by the GATE and DECODER block

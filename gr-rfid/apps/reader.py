@@ -9,7 +9,19 @@ from gnuradio import digital
 from gnuradio import qtgui
 import rfid
 
-DEBUG = False
+# for aws
+import aws_interface
+import threading
+import time
+
+LOC = 'Q245'
+
+# diction 
+pat_dictionary = {
+        17: '1234'        
+        }
+
+DEBUG = True
 
 class reader_top_block(gr.top_block):
 
@@ -41,7 +53,8 @@ class reader_top_block(gr.top_block):
     self.sink.set_center_freq(self.freq, 0)
     self.sink.set_gain(self.tx_gain, 0)
     self.sink.set_antenna("TX/RX", 0)
-    
+
+
   def __init__(self):
     gr.top_block.__init__(self)
 
@@ -51,11 +64,11 @@ class reader_top_block(gr.top_block):
     ######## Variables #########
     self.dac_rate = 1e6                 # DAC rate 
     self.adc_rate = 100e6/50            # ADC rate (2MS/s complex samples)
-    self.decim     = 3                    # Decimation (downsampling factor)
-    self.ampl     = .3                  # Output signal amplitude (signal power vary for different RFX900 cards)
+    self.decim     = 5                    # Decimation (downsampling factor)
+    self.ampl     = .5                  # Output signal amplitude (signal power vary for different RFX900 cards)
     self.freq     = 910e6                # Modulation frequency (can be set between 902-920)
-    self.rx_gain   = 30                   # RX Gain (gain at receiver)
-    self.tx_gain   = 0                    # RFX900 no Tx gain option
+    self.rx_gain   = 1                   # RX Gain (gain at receiver)
+    self.tx_gain   = 1                    # RFX900 no Tx gain option
 
     self.usrp_address_source = "recv_frame_size=1024"
     self.usrp_address_sink   = "recv_frame_size=1024"
@@ -117,11 +130,33 @@ class reader_top_block(gr.top_block):
     #self.connect(self.file_sink_reader, self.file_sink_reader)
     #self.connect(self.matched_filter, self.file_sink_matched_filter)
 
+  def get_scans(self):
+    return self.reader.export_list()
+
+def aws_export(reader_block):
+    while(1):
+        scans = reader_block.reader.export_list()
+        print(type(scans))
+        print(scans)
+
+        for scan in scans:
+            if scan in pat_dictionary.get_keys():
+                aws_interface(pat_dictionary[scan], LOC)
+
+        time.sleep(5)
+
 if __name__ == '__main__':
 
   main_block = reader_top_block()
   main_block.start()
-
+  
+  
+  # start aws interface
+  aws = threading.Thread(target=aws_export, args=(main_block,))
+  aws.daemon=True
+  aws.start()
+  
+  #print(main_block.get_scans())
   while(1):
     inp = raw_input("'Q' to quit \n")
     if (inp == "q" or inp == "Q"):

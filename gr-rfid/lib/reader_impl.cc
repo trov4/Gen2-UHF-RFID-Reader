@@ -439,8 +439,15 @@ namespace gr {
         memcpy(crc, tmp, 5*sizeof(float));
       }
       for (int i = 4; i >= 0; i--)
-        q.push_back(crc[i]);
+	      q.push_back(crc[i]);
     }
+    std::vector<int> reader_impl::export_list() {
+	  output_list = reader_state->tags_to_export;
+	  for (int i = 0; i<output_list.size(); i++)
+		  std::cout<<output_list[i]<<std::endl;;
+	  reader_state->tags_to_export.clear();
+	  return output_list;
+	}
   } /* namespace rfid */
 } /* namespace gr */
 

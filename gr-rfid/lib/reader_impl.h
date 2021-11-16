@@ -40,11 +40,13 @@ namespace gr {
       void gen_query_bits();
       void gen_ack_bits(const float * in);
 
+      std::vector <int> output_list;
+
     public:
       void print_results();
       reader_impl(int sample_rate, int dac_rate);
       ~reader_impl();
-
+      std::vector<int> export_list();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 

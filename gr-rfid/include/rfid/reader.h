@@ -49,7 +49,7 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(int sample_rate, int dac_rate);
-
+      virtual std::vector<int> export_list()=0;
     };
 
   } // namespace rfid

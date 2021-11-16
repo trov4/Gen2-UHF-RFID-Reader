@@ -324,14 +324,15 @@ namespace gr {
             else
               char_bits[i] = '1';
           }
-        //  if(check_crc(char_bits,128) == 1)
-        //  {
+        //if(true )//check_crc(char_bits,128) == 1)
+        //{
 	    std::map<int,int>::iterator it2 = reader_state->reader_stats.tag_reads.find(17);
 	    if (it2 != reader_state->reader_stats.tag_reads.end() && count > 5) {
 		it2->second++;
 	    } else if(count>5) {
 		    //count++;
 		    reader_state->reader_stats.tag_reads[17]=1;
+		    reader_state->tags_to_export.push_back(17);
 	    } else {
 		    count++;
 		   }
@@ -360,8 +361,9 @@ namespace gr {
               result += std::pow(2,7-i) * EPC_bits[104+i] ;
             }
             GR_LOG_INFO(d_debug_logger, "EPC CORRECTLY DECODED, TAG ID : " << result);
-
+	    std::cout<<"Correctly decoded: "<<result<<std::endl;
             // Save part of Tag's EPC message (EPC[104:111] in decimal) + number of reads
+	    reader_state->tags_to_export.push_back(result);
             std::map<int,int>::iterator it = reader_state->reader_stats.tag_reads.find(result);
             if ( it != reader_state->reader_stats.tag_reads.end())
             {
