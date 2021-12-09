@@ -10,7 +10,7 @@ from gnuradio import qtgui
 import rfid
 
 # for aws
-import aws_interface
+import aws_interface as iot
 import threading
 import time
 
@@ -21,7 +21,7 @@ pat_dictionary = {
         17: '1234'        
         }
 
-DEBUG = True
+DEBUG = False
 
 class reader_top_block(gr.top_block):
 
@@ -136,14 +136,12 @@ class reader_top_block(gr.top_block):
 def aws_export(reader_block):
     while(1):
         scans = reader_block.reader.export_list()
-        print(type(scans))
         print(scans)
-
         for scan in scans:
-            if scan in pat_dictionary.get_keys():
-                aws_interface(pat_dictionary[scan], LOC)
+            if scan in pat_dictionary.keys():
+                iot.push(pat_dictionary[scan], LOC)
 
-        time.sleep(5)
+        time.sleep(2)
 
 if __name__ == '__main__':
 

@@ -44,5 +44,5 @@ def push(pat_id, loc):
 	messageJson = json.dumps({"ID": pat_id, "location": loc})
 	myAWSIoTMQTTClient.publish(topic, messageJson, 1)
 	print('Published topic %s: %s\n' % (topic, messageJson))
-	time.sleep(3)
+	time.sleep(1)
 #myAWSIoTMQTTClient.disconnect()
